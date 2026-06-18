@@ -1,4 +1,4 @@
-name: ルアー記事を自動生成
+name: 記事を自動生成
 run-name: ${{ inputs.product_name }} の記事を生成
 
 'on':
