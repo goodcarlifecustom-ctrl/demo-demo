@@ -166,7 +166,7 @@ jobs:
           prompt = f"""
           あなたは上場企業に勤める敏腕SEOライターです。
           釣りジャンルの記事を、読者の購入判断に役立つように作成してください。
-          次の商品についてWeb調査を行い、WordPressブロックエディタへそのまま貼れるHTML本文だけを返してください。
+          次の商品についてWeb調査を行い、調査元と採用根拠を `research/{slug}-sources.md` に保存したうえで、WordPressブロックエディタへそのまま貼れるHTML本文だけを返してください。
 
           【変数】
           - キーワード: {keyword}
@@ -191,19 +191,22 @@ jobs:
           2. 良い点・悪い点・使い方は、メーカー情報だけで断定せず、独立したレビュー、釣具店の記事、実釣記事、動画の説明文など複数ソースで照合してください。
           3. 検索結果のスニペットだけを根拠にせず、可能な限り元ページを確認してください。
           4. 確認できない数値、カラー、使用感、釣果、価格、飛距離は推測で補わないでください。
-          5. 自分で実釣したような架空の一人称体験は書かず、「公式では」「レビューでは」「使用者からは」のように情報源を区別してください。
-          6. ハルシネーションは厳禁です。確認できない内容は確認できないと自然に書いてください。
+          5. 使用感を伝えるための「実際に使ってみると」「キャストすると」「巻き始めると」などの表現は使って構いません。ただし、執筆者固有の釣果、所有経験、実在しない釣行日・場所・魚のサイズは作らないでください。
+          6. 調査元、URL、採用した根拠、対象モデルとの関係は、HTML本文ではなく `research/{slug}-sources.md` にだけ保存してください。
+          7. 別サイズ、旧モデル、後継モデル、類似商品の情報を対象商品の使用感として流用しないでください。別モデルのページを調査した場合は、採用しなかった理由を `research/{slug}-sources.md` に記録してください。
+          8. ハルシネーションは厳禁です。確認できない内容は確認できないと自然に書いてください。
 
           【絶対に守る出力ルール】
-          - 出力はHTML本文のみです。前置き、作業報告、TODO、Markdown、コードフェンスは出力しないでください。
+          - 最終回答として出力する内容はHTML本文のみです。前置き、作業報告、TODO、Markdown、コードフェンスは出力しないでください。
+          - 調査元と採用根拠は、最終回答ではなく `research/{slug}-sources.md` へ保存してください。
           - 本文中に [1]、[2]、[1][3] のようなサイテーション番号を絶対に入れないでください。
-          - 参考資料、出典一覧、URL一覧は出力しないでください。
+          - 情報源名、参考資料、出典一覧、URL一覧はHTML本文に出力しないでください。
           - <h2>、<h3>、<p>、<ul>、<li>、<table>、<tbody>、<tr>、<td>、<strong>、<br>のみを中心に使ってください。
           - 段落には必ず<p>タグを使ってください。
           - 見出しは<h2>、小見出しは<h3>タグを使ってください。
           - Markdownの##、###、|表|、箇条書き記号だけの出力は禁止です。
           - WordPressに貼り付ける記事本文なので、全体を<html>、<body>で囲まないでください。
-          - 記事の最後だけに「<p>文字数：0000字</p>」の形式で文字数を入れてください。
+          - 記事末尾の文字数報告は出力しないでください。
 
           【文章方針】
           - ですます調で書いてください。
@@ -223,6 +226,19 @@ jobs:
           - PASONAの流れを意識し、悩み、失敗回避、解決策、向く人、行動判断につながる構成にしてください。
           - 商標名、事業者名、商品名は言い換えないでください。
 
+
+          【使用感として書くインプレルール】
+          - 調査には、公式商品ページ、メーカー解説、使用者の実釣インプレ、個人ブログ、釣具メディア、販売店の使用解説、動画内または動画説明欄の使用解説を積極的に利用して構いません。
+          - HTML本文では「誰がそう言ったか」を紹介せず、確認できた挙動や使用感を直接説明してください。情報源の説明は `research/{slug}-sources.md` にのみ記録します。
+          - HTML本文では「公式では」「メーカー解説では」「レビューでは」「独立レビューでは」「第三者レビューでは」「口コミでは」「販売店では」「解説記事では」「使用者からは」「公式ページでは」「メーカーによると」「販売店解説」「使用者の声」「評判では」「〜と評価されています」「〜という声があります」「〜が確認できます」「〜が確認できました」「調査で確認したところ」を使わないでください。
+          - 使用感を伝える表現として、「実際に使ってみると」「キャストすると」「投げてみると」「巻いてみると」「巻き始めると」「スローに巻くと」「速度を上げると」「手元には」「ロッドを立てると」「流れに乗せると」「ジャークを入れると」「巻きを止めると」「足元まで引いてくると」「手に取って試すと」は使って構いません。
+          - 許可するのは使用場面を説明する文体だけです。「私がこのルアーで○匹釣りました」「筆者の釣行では毎回釣れました」「私は何年も愛用しています」「自分の所有品では壊れませんでした」のような、根拠のない個人的な釣果、所有経験、具体的な釣行体験は作らないでください。
+          - 良かった点・悪かった点・使い方の各H3は、原則として「使用感の結論」「操作したときに起きる挙動」「特徴や弱点が出やすい条件」「実釣でのメリットまたは困りごと」「操作のコツ、回避策、使い分け」の順番で構成してください。
+          - 悪いインプレは疑問形や曖昧な不安表現にしないでください。「迷うのでは？」「扱いにくいかもしれません」「不安があります」「初心者には難しいのではないでしょうか」は禁止です。根拠が弱い場合は、悪いインプレを作らず省略してください。
+          - 対象商品だけで使用感を組み立ててください。別サイズ、旧モデル、後継モデル、類似商品の名称や情報を、対象商品の使用感の根拠としてHTML本文に出さないでください。
+          - 「全く釣れない」「ゴミルアー」「欠陥品」「詐欺」「買う価値がない」「使い物にならない」「メーカーが嘘をついている」など、メーカーや商品を侮辱する表現は禁止です。
+          - 仕様や数値はそのまま並べるだけでなく、使用時にどう感じるかへ変換してください。ただし、数値や挙動は推測で作らないでください。
+
           【納品ルール】
           - WordPressブロックエディタで正しく見出しや段落を識別できる形式にしてください。
           - サービスや商品の説明が必要なH3見出し内には、必要に応じて<table>タグを用いた表を挿入してください。
@@ -240,8 +256,11 @@ jobs:
             - 例: <p>引き抵抗が軽いと噂の70mm・13gの「{product}」</p>
             - 体言止めにし、句点を付けず、末尾を必ず「{product}」にしてください。
             - 全長と重量は公式情報で確認できた値だけを使ってください。
-          2つ目の<p>: 「悪いインプレまたは評判を1つだけ」という評判は本当なのでしょうか？
-            - かぎ括弧内には悪い評判を1つだけ入れてください。
+          2つ目の<p>: 対象商品で確認できた悪いインプレを1つだけ提示し、「本当に初心者には扱いにくいのでしょうか？」など、悪かった点まで読み進めたくなる問いで締めてください。
+            - 例: <p>「操作方法が多く、最初は使い分けに迷いやすい」という悪いインプレもあります。本当に初心者には扱いにくいのでしょうか？</p>
+            - 悪いインプレは対象モデルで確認できた内容だけにし、旧モデルや別サイズから流用しないでください。
+            - 導入文で出した悪いインプレは、「インプレ：悪かった点」に同じ内容のH3を必ず設置し、使用感、発生条件、具体的な困りごと、回避策まで解説してください。
+            - 侮辱的な悪評や、悪かった点本文に存在しない悪評は禁止です。
           3つ目の<p>: この記事では「{product}」の良かった・悪かったインプレを徹底解説します。
           4つ目の<p>: 「{product}」を購入しようか迷っている人の参考になれば幸いです。
 
@@ -250,7 +269,7 @@ jobs:
           - 公式ページの情報だけを使い、<table class="wp-block-table"><tbody>形式のスペック表を作成してください。
           - 全長、重量、タイプ、レンジ、アクション、フック、リングなど、公式に掲載された項目を記載してください。
           - 公式にない項目を推測で埋めないでください。
-          - 表の下に、公式ページの商品説明をそのまま長く転載せず、意味を保った自然な文章に要約してください。
+          - 表の下に、商品説明をそのまま長く転載せず、意味を保った自然な文章に要約してください。
 
           <h3>{product}のカラーラインナップ</h3>
           - 公式商品ページに掲載されているカラー名を、掲載順を尊重して<ul><li>で書いてください。
@@ -283,7 +302,7 @@ jobs:
           - 購入判断につながる結論を300〜400文字程度でまとめてください。
           - 誇張した断定や根拠のない「絶対に釣れる」などの表現は禁止です。
           - 参考資料や出典一覧は出力しないでください。
-          - 最後の最後に、文字数を<p>文字数：0000字</p>の形式で報告してください。
+          - 記事末尾の文字数報告は出力しないでください。
 
           【最終チェック】
           - HTML本文のみを出力している。
@@ -291,11 +310,18 @@ jobs:
           - Markdown見出しやMarkdown表がない。
           - すべての段落が<p>タグになっている。
           - H2は指定した5個だけで、すべて「{product}」から始まっている。
-          - 導入文は4つの<p>タグで、2つ目の悪い評判は1つだけである。
+          - 導入文は4つの<p>タグで、2つ目の悪いインプレは1つだけであり、悪かった点H3と対応している。
           - 基本スペック表、公式説明の要約、カラーリストがある。
           - 良かった点、悪かった点、使い方には、冒頭の総括リスト、短い解説、複数のH3本文がある。
-          - 公式事実、第三者の評判、筆者の整理が読み分けられる。
-          - 記事最後だけに文字数報告がある。
+          - 良かった点、悪かった点、使い方の各H3が情報源紹介ではなく、使用時の挙動を説明している。
+          - 各H3に操作感、適した場面、注意点、回避策のいずれかが含まれている。
+          - 根拠のない個人的な釣果、所有経験、具体的な釣行体験がない。
+          - 対象商品以外のモデルを根拠にした使用感がない。
+          - 情報源名、URL、サイテーション番号がHTML本文にない。
+          - 根拠は `research/{slug}-sources.md` に保存されている。
+          - 根拠が弱い使用感は削除されている。
+          - 禁止語検査を行い、対象語句が残っていたら使用感を直接説明する文章へ書き換えてから保存している。
+          - 記事末尾の文字数報告がない。
           """
 
           pathlib.Path(".codex-runtime/article-prompt.md").write_text(
@@ -321,7 +347,6 @@ jobs:
           set -euo pipefail
 
           python - <<'PY'
-          import html
           import os
           import pathlib
           import re
@@ -342,16 +367,11 @@ jobs:
           # 念のため本文内の脚注番号風サイテーションを削除する。
           text = re.sub(r"\[(?:\d+)(?:\]\[\d+)*\]", "", text)
 
-          # Codexが出した文字数行をいったん削除し、実測値で付け直す。
+          # Codexが文字数行を出した場合は公開HTMLから削除する。
           text = re.sub(r"\s*<p>\s*文字数\s*[：:]\s*[\d,０-９，]+\s*字\s*</p>\s*$", "", text, flags=re.IGNORECASE)
 
-          plain = re.sub(r"<[^>]+>", "", text)
-          plain = html.unescape(plain)
-          plain = re.sub(r"\s+", "", plain)
-          char_count = len(plain)
-
           output = pathlib.Path("generated") / f"{slug}.html"
-          output.write_text(text.strip() + f"\n\n<p>文字数：{char_count}字</p>\n", encoding="utf-8")
+          output.write_text(text.strip() + "\n", encoding="utf-8")
           PY
 
       - name: HTML記事構成を自動検査
@@ -419,8 +439,9 @@ jobs:
                   errors.append("導入文1段落目に全長（mmまたはcm）がありません。")
               if not re.search(r"\d+(?:\.\d+)?\s*g", intro_ps[0], flags=re.IGNORECASE):
                   errors.append("導入文1段落目に重量（g）がありません。")
-              if not re.fullmatch(r"「[^「」]+」という評判は本当なのでしょうか？", intro_ps[1]):
-                  errors.append("導入文2段落目が『悪い評判を1つだけ』の形式になっていません。")
+              bad_intro_match = re.match(r"「(?P<bad>[^「」]+)」.*悪いインプレ.*[？?]$", intro_ps[1])
+              if not bad_intro_match:
+                  errors.append("導入文2段落目が『悪いインプレを1つだけ提示して問いで締める』形式になっていません。")
               expected_3 = f"この記事では「{product}」の良かった・悪かったインプレを徹底解説します。"
               expected_4 = f"「{product}」を購入しようか迷っている人の参考になれば幸いです。"
               if intro_ps[2] != expected_3:
@@ -460,11 +481,69 @@ jobs:
               if li_count < minimum_h3:
                   errors.append(f"{label}冒頭の総括リストが不足しています。")
 
-          if not re.search(r"<p>\s*文字数\s*：\s*\d+\s*字\s*</p>\s*$", text, flags=re.IGNORECASE):
-              errors.append("記事最後に『<p>文字数：0000字</p>』がありません。")
+          if re.search(r"<p>\s*文字数\s*[：:]\s*[\d,０-９，]+\s*字\s*</p>", text, flags=re.IGNORECASE):
+              errors.append("記事末尾の文字数報告は出力しない設定です。")
+
+          if re.search(r"https?://|www\.", text, flags=re.IGNORECASE):
+              errors.append("公開HTMLにURLが含まれています。")
+
+          insult_terms = [
+              "全く釣れない",
+              "ゴミルアー",
+              "欠陥品",
+              "詐欺",
+              "買う価値がない",
+              "使い物にならない",
+              "メーカーが嘘をついている",
+          ]
+          found_insult_terms = [term for term in insult_terms if term in text]
+          if found_insult_terms:
+              errors.append("侮辱的な表現が含まれています: " + ", ".join(found_insult_terms))
+
+          bad_section = section(f"{product}のインプレ：悪かった点", f"{product}の使い方")
+          if 'bad_intro_match' in locals() and bad_intro_match:
+              bad_intro = bad_intro_match.group("bad")
+              bad_h3_texts = [re.sub(r"<[^>]+>", "", h).strip() for h in re.findall(r"<h3[^>]*>\s*(.*?)\s*</h3>", bad_section, flags=re.IGNORECASE | re.DOTALL)]
+              if not any(bad_intro in h or h in bad_intro for h in bad_h3_texts):
+                  errors.append("導入文の悪いインプレと悪かった点H3が対応していません。")
+
+          banned_terms = [
+              "公式では",
+              "公式ページでは",
+              "メーカーによると",
+              "メーカー解説では",
+              "レビューでは",
+              "レビューでも",
+              "独立レビュー",
+              "第三者レビュー",
+              "ユーザーレビュー",
+              "販売店解説",
+              "使用者の声",
+              "評判では",
+              "口コミでは",
+              "販売店では",
+              "解説記事では",
+              "使用者からは",
+              "調査で確認したところ",
+              "評価されています",
+              "という声があります",
+              "確認できます",
+              "確認できました",
+              "私がこのルアーで",
+              "筆者の釣行",
+              "私は何年も愛用",
+              "自分の所有品",
+          ]
+          found_banned_terms = [term for term in banned_terms if term in text]
+          if found_banned_terms:
+              errors.append("使用感インプレの禁止語が残っています: " + ", ".join(found_banned_terms))
 
           if "参考資料" in text or "参照資料" in text or "出典" in text:
               errors.append("参考資料・参照資料・出典一覧は出力しない設定です。")
+
+          research_path = pathlib.Path("research") / f"{slug}-sources.md"
+          if not research_path.exists() or not research_path.read_text(encoding="utf-8").strip():
+              errors.append(f"調査元ファイル {research_path} が作成されていません。")
 
           if errors:
               print("HTML記事の自動検査に失敗しました:")
@@ -483,6 +562,7 @@ jobs:
           path: |
             generated/${{ inputs.article_slug }}.html
             generated/article-raw.html
+            research/${{ inputs.article_slug }}-sources.md
           if-no-files-found: warn
           retention-days: 30
 
@@ -518,17 +598,20 @@ jobs:
           set -euo pipefail
 
           article_path="articles/${ARTICLE_SLUG}.html"
+          research_path="research/${ARTICLE_SLUG}-sources.md"
           branch_name="codex/html-article-${ARTICLE_SLUG}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
-          mkdir -p articles
+          mkdir -p articles research
           cp ".article-artifact/${ARTICLE_SLUG}.html" "$article_path"
+          cp ".article-artifact/${ARTICLE_SLUG}-sources.md" "$research_path"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch_name"
-          git add -- "$article_path"
+          git add -- "$article_path" "$research_path"
 
           echo "article_path=$article_path" >> "$GITHUB_OUTPUT"
+          echo "research_path=$research_path" >> "$GITHUB_OUTPUT"
           echo "branch_name=$branch_name" >> "$GITHUB_OUTPUT"
 
           if git diff --cached --quiet; then
@@ -546,6 +629,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           ARTICLE_PATH: ${{ steps.commit.outputs.article_path }}
+          RESEARCH_PATH: ${{ steps.commit.outputs.research_path }}
           BRANCH_NAME: ${{ steps.commit.outputs.branch_name }}
         shell: bash
         run: |
@@ -556,10 +640,11 @@ jobs:
 
           CodexでWeb調査し、指定テンプレートに沿って「${PRODUCT_NAME}」のHTML記事を生成しました。
 
-          - 保存先: \`${ARTICLE_PATH}\`
+          - 記事保存先: \`${ARTICLE_PATH}\`
+          - 調査元保存先: \`${RESEARCH_PATH}\`
           - WordPressブロックエディタ向けHTML形式です
           - 本文中の \`[1][3]\` 形式のサイテーション番号は削除しています
-          - ワークフロー内のHTML構成検査を通過済みです
+          - ワークフロー内のHTML構成検査と禁止語検査を通過済みです
 
           公開前に、商品仕様、カラー名、価格、表現の妥当性を人の目でも確認してください。
           EOF
@@ -575,4 +660,5 @@ jobs:
             echo
             echo "- Pull Request: ${pr_url}"
             echo "- 記事: \`${ARTICLE_PATH}\`"
+            echo "- 調査元: \`${RESEARCH_PATH}\`"
           } >> "$GITHUB_STEP_SUMMARY"
